@@ -1,0 +1,323 @@
+---
+title: "Data Analysis of Palmer Penguins Dataset"
+author: "Dr Muhammad Saufi Abdullah"
+date: last-modified
+format: 
+  html:
+    toc: true
+    toc-title: Contents
+    toc-location: left
+    toc-depth: 3
+    toc-expand: 1
+    number-sections: true
+    code-fold: true
+    code-summary: "Code"
+    code-link: true
+    code-annotations: hover
+    theme:
+      light: united
+      dark: cyborg
+    css: styles.css
+    embed-resources: true
+    template-partials: 
+      - title-block.html
+    title-block-banner: true
+editor: visual
+include-after-body: "footer.html"
+---
+
+::: {.callout-note collapse="true"}
+## Please Read
+
+This report has been created as a learning exercise on how to generate *interactive* and *engaging* reports using **Quarto**.
+
+It demonstrates the integration of various **R packages** for data *exploration*, *visualization*, and *data analysis*, with a focus on creating a **dynamic** and **user-friendly** report layout.
+
+The use of interactive elements, such as *tabs*, *tables*, and *visualizations*, is emphasized to showcase the versatility of **Quarto** in producing polished and professional reports.
+:::
+
+::: {.callout-important collapse=true}
+## Disclaimer
+
+This report is intended solely for educational purposes. The analyses and interpretations provided here are based on the **Palmer Penguins** dataset and serve as examples to practice data analysis and visualization techniques. 
+:::
+
+# Introduction
+
+The objective of this report is to demonstrate a **data analysis workflow** using the `palmerpenguins` package, which offers an excellent dataset for data *exploration* and *visualization*.
+
+## Palmer Penguins
+
+The package contains data on *344 penguins* across three species, collected from three different islands in the **Palmer Archipelago, Antarctica**^[The Palmer Archipelago is a group of islands located off the northwestern coast of the Antarctic Peninsula.]. The data was gathered by **Dr. Kristen Gorman** and the **Palmer Station, Antarctica LTER**^[The Long Term Ecological Research (LTER) network is a collaborative program that conducts long-term studies to monitor and understand ecological processes. The Palmer Station in Antarctica is part of this network, conducting critical research on the region's unique ecosystem.].
+
+![Artwork by Allison Horst](Input/penguins.png){fig-align="center"}
+
+## Setting Up the Environment
+
+This analysis requires several packages. The following packages will be used throughout the report for data *manipulation*, *visualization*, and *data analysis*.
+
+```{r, warning=FALSE, message=FALSE}
+library(palmerpenguins) # <1>
+library(tidyverse) # <2>
+library(DT) # <3>
+library(ggplot2) # <4>
+library(gtsummary) # <5>
+```
+
+1.  To use dataset for analysis.
+2.  For data manipulation and visualization.
+3.  To create interactive data tables.
+4.  For creating customizable visualizations.
+5.  For generating summary tables and descriptive statistics.
+
+# Exploratory Data Analysis
+
+Let's dive deeper into the `penguins` dataset to explore its *features* and *structure*.
+
+## Summary of Dataset
+
+```{r}
+data("penguins")
+summary(penguins)
+```
+
+------------------------------------------------------------------------
+
+1.  The **Palmer Penguins** dataset contains *344 penguins* from three distinct species: **Adelie** (152), **Chinstrap** (68), and **Gentoo** (124). These penguins were observed on three islands within the Palmer Archipelago: **Biscoe**, **Dream**, and **Torgersen**.
+
+2.  The dataset includes several key measurements:
+
+    -   The **bill length**, which ranges from 32.1 mm to 59.6 mm with an average of 43.92 mm, and
+
+    -   The **bill depth**, ranging from 13.1 mm to 21.5 mm, with an average of 17.15 mm.
+
+    -   The **flipper length** varies between 172 mm and 231 mm, averaging 200.9 mm.
+
+    -   The **body mass** ranges from 2700 g to 6300 g, with a mean of 4202 g.
+
+3.  The dataset provides information on the sex of the penguins, with *165 females* and *168 males*, though 11 entries for sex are missing.
+
+4.  The data was collected over three years: **2007**, **2008**, and **2009**, with a few missing values for bill length and bill depth (2 entries each).
+
+## Descriptive Tables
+
+Using the `gtsummary` package, we can generate a detailed table summarizing the dataset’s characteristics, making it easier to interpret the *distribution* of each variable.
+
+```{r}
+tbl_summary(penguins)
+```
+
+The `DT` package allows us to create an **interactive table** that enables *filtering*, *searching*, and *sorting* based on specific columns, offering a dynamic way to explore the dataset further.
+
+```{r}
+datatable(penguins, filter = "top")
+```
+
+# Data Visualization
+
+Let us explore various **visualizations** that can be generated from the **Palmer Penguins** dataset using the `ggplot2` package. These visualizations, inspired by Allison Horst, provide insights into the relationships between key variables.
+
+## Penguin Mass vs. Flipper Length
+
+```{r, warning=FALSE, fig.align='center'}
+mass_flipper <- ggplot(data = penguins, 
+                       aes(x = flipper_length_mm,
+                           y = body_mass_g)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(title = "Penguin size, Palmer Station LTER",
+       subtitle = "Flipper length and body mass for Adelie, Chinstrap and Gentoo Penguins",
+       x = "Flipper length (mm)",
+       y = "Body mass (g)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme(legend.position = c(0.2, 0.7),
+        plot.title.position = "plot",
+        plot.caption = element_text(hjust = 0, face= "italic"),
+        plot.caption.position = "plot")
+
+mass_flipper
+```
+
+::: {.column-margin}
+This graph illustrates the relationship between flipper length and body mass for three penguin species: Adelie, Chinstrap, and Gentoo, based on data collected at Palmer Station LTER. This visualization highlights the species-specific differences in body mass and flipper length.
+:::
+
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">See in Full Screen</button>
+
+<div class="modal fade" id="exampleModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered p-8" style="max-width: 90%"><div class="modal-content">
+
+```{r, echo=FALSE, warning=FALSE, out.width="100%"}
+mass_flipper
+```
+
+</div></div></div>
+
+## Flipper Length vs. Bill Length
+
+```{r, warning=FALSE, fig.align='center'}
+flipper_bill <- ggplot(data = penguins,
+                         aes(x = flipper_length_mm,
+                             y = bill_length_mm)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(title = "Flipper and bill length",
+       subtitle = "Dimensions for Adelie, Chinstrap and Gentoo Penguins at Palmer Station LTER",
+       x = "Flipper length (mm)",
+       y = "Bill length (mm)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme(legend.position = c(0.85, 0.15),
+        plot.title.position = "plot",
+        plot.caption = element_text(hjust = 0, face= "italic"),
+        plot.caption.position = "plot")
+
+flipper_bill
+```
+
+::: {.column-margin}
+This graph visualizes the relationship between flipper length (mm) and bill length (mm) for three penguin species. It highlights species-specific variations in bill and flipper length, showing that Gentoo penguins tend to have the longest flippers, while Chinstrap penguins exhibit the greatest variability in bill length.
+:::
+
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">See in Full Screen</button>
+
+<div class="modal fade" id="exampleModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered p-8" style="max-width: 90%"><div class="modal-content">
+
+```{r, echo=FALSE, warning=FALSE, out.width="100%"}
+flipper_bill
+```
+
+</div></div></div>
+
+## Bill Length vs. Bill Depth
+
+```{r, message=FALSE, warning=FALSE, fig.align='center'}
+bill_len_dep <- ggplot(data = penguins,
+                         aes(x = bill_length_mm,
+                             y = bill_depth_mm,
+                             group = species)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  geom_smooth(method = "lm", se = FALSE, aes(color = species)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(title = "Penguin bill dimensions",
+       subtitle = "Bill length and depth for Adelie, Chinstrap and Gentoo Penguins at Palmer Station LTER",
+       x = "Bill length (mm)",
+       y = "Bill depth (mm)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme(legend.position = c(0.85, 0.15),
+        plot.title.position = "plot",
+        plot.caption = element_text(hjust = 0, face= "italic"),
+        plot.caption.position = "plot")
+
+bill_len_dep
+```
+::: {.column-margin}
+This graph illustrates the relationship between bill length (mm) and bill depth (mm) for three penguin species. Each species is color-coded and shown with distinct shapes. The trend lines are fitted for each species to show the linear relationship between bill length and depth.
+:::
+
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">See in Full Screen</button>
+
+<div class="modal fade" id="exampleModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered p-8" style="max-width: 90%"><div class="modal-content">
+
+```{r, echo=FALSE, warning=FALSE, out.width="100%"}
+bill_len_dep
+```
+
+</div></div></div>
+
+## Using Tabs for Multiple Graphs
+
+Including **multiple graphs** in a report can sometimes make it feel *cluttered*. By organizing the graphs into **tabs**, we give readers the *flexibility* to easily navigate and view only the visualizations they are interested in. This approach keeps the report *clean* and more *user-friendly,* allowing for a better browsing experience.
+
+::: {.panel-tabset .nav-pills}
+
+## Penguin Mass vs. Flipper Length
+
+```{r, echo=FALSE, warning=FALSE, fig.align='center'}
+mass_flipper <- ggplot(data = penguins, 
+                       aes(x = flipper_length_mm,
+                           y = body_mass_g)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(title = "Penguin size, Palmer Station LTER",
+       subtitle = "Flipper length and body mass for Adelie, Chinstrap and Gentoo Penguins",
+       x = "Flipper length (mm)",
+       y = "Body mass (g)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme(legend.position = c(0.2, 0.7),
+        plot.title.position = "plot",
+        plot.caption = element_text(hjust = 0, face= "italic"),
+        plot.caption.position = "plot")
+
+mass_flipper
+```
+
+
+## Flipper Length vs. Bill Length
+
+```{r, echo=FALSE, warning=FALSE, fig.align='center'}
+flipper_bill <- ggplot(data = penguins,
+                         aes(x = flipper_length_mm,
+                             y = bill_length_mm)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(title = "Flipper and bill length",
+       subtitle = "Dimensions for Adelie, Chinstrap and Gentoo Penguins at Palmer Station LTER",
+       x = "Flipper length (mm)",
+       y = "Bill length (mm)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme(legend.position = c(0.85, 0.15),
+        plot.title.position = "plot",
+        plot.caption = element_text(hjust = 0, face= "italic"),
+        plot.caption.position = "plot")
+
+flipper_bill
+```
+
+
+## Bill Length vs. Bill Depth
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
+bill_len_dep <- ggplot(data = penguins,
+                         aes(x = bill_length_mm,
+                             y = bill_depth_mm,
+                             group = species)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  geom_smooth(method = "lm", se = FALSE, aes(color = species)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(title = "Penguin bill dimensions",
+       subtitle = "Bill length and depth for Adelie, Chinstrap and Gentoo Penguins at Palmer Station LTER",
+       x = "Bill length (mm)",
+       y = "Bill depth (mm)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme(legend.position = c(0.85, 0.15),
+        plot.title.position = "plot",
+        plot.caption = element_text(hjust = 0, face= "italic"),
+        plot.caption.position = "plot")
+
+bill_len_dep
+```
+
+:::
