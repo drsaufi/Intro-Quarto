@@ -61,14 +61,12 @@ library(palmerpenguins) # <1>
 library(tidyverse) # <2>
 library(DT) # <3>
 library(ggplot2) # <4>
-library(gtsummary) # <5>
 ```
 
 1.  To use dataset for analysis.
 2.  For data manipulation and visualization.
 3.  To create interactive data tables.
 4.  For creating customizable visualizations.
-5.  For generating summary tables and descriptive statistics.
 
 # Exploratory Data Analysis
 
@@ -100,12 +98,6 @@ summary(penguins)
 4.  The data was collected over three years: **2007**, **2008**, and **2009**, with a few missing values for bill length and bill depth (2 entries each).
 
 ## Descriptive Tables
-
-Using the `gtsummary` package, we can generate a detailed table summarizing the dataset’s characteristics, making it easier to interpret the *distribution* of each variable.
-
-```{r}
-tbl_summary(penguins)
-```
 
 The `DT` package allows us to create an **interactive table** that enables *filtering*, *searching*, and *sorting* based on specific columns, offering a dynamic way to explore the dataset further.
 
