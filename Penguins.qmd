@@ -36,10 +36,10 @@ It demonstrates the integration of various **R packages** for data *exploration*
 The use of interactive elements, such as *tabs*, *tables*, and *visualizations*, is emphasized to showcase the versatility of **Quarto** in producing polished and professional reports.
 :::
 
-::: {.callout-important collapse=true}
+::: {.callout-important collapse="true"}
 ## Disclaimer
 
-This report is intended solely for educational purposes. The analyses and interpretations provided here are based on the **Palmer Penguins** dataset and serve as examples to practice data analysis and visualization techniques. 
+This report is intended solely for educational purposes. The analyses and interpretations provided here are based on the **Palmer Penguins** dataset and serve as examples to practice data analysis and visualization techniques.
 :::
 
 # Introduction
@@ -48,9 +48,26 @@ The objective of this report is to demonstrate a **data analysis workflow** usin
 
 ## Palmer Penguins
 
-The package contains data on *344 penguins* across three species, collected from three different islands in the **Palmer Archipelago, Antarctica**^[The Palmer Archipelago is a group of islands located off the northwestern coast of the Antarctic Peninsula.]. The data was gathered by **Dr. Kristen Gorman** and the **Palmer Station, Antarctica LTER**^[The Long Term Ecological Research (LTER) network is a collaborative program that conducts long-term studies to monitor and understand ecological processes. The Palmer Station in Antarctica is part of this network, conducting critical research on the region's unique ecosystem.].
+The package contains data on *344 penguins* across three species, collected from three different islands in the **Palmer Archipelago, Antarctica**[^1]. The data was gathered by **Dr. Kristen Gorman** and the **Palmer Station, Antarctica LTER**[^2].
+
+[^1]: The Palmer Archipelago is a group of islands located off the northwestern coast of the Antarctic Peninsula.
+
+[^2]: The Long Term Ecological Research (LTER) network is a collaborative program that conducts long-term studies to monitor and understand ecological processes. The Palmer Station in Antarctica is part of this network, conducting critical research on the region's unique ecosystem.
 
 ![Artwork by Allison Horst](Input/penguins.png){fig-align="center"}
+
+```{r, message=FALSE, fig.align="center", fig.cap="Figure 1: Palmer Archipelago, Antarctica."}
+
+library(leaflet)
+
+leaflet() %>% 
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng = -64.050, lat = -64.773, popup = "Palmer Archipelago, Antarctica")
+```
+
+::: column-margin
+These beautifully crafted illustrations were designed by Allison Horst. Visit her page [here](https://allisonhorst.com/allison-horst).
+:::
 
 ## Setting Up the Environment
 
@@ -134,19 +151,25 @@ mass_flipper <- ggplot(data = penguins,
 mass_flipper
 ```
 
-::: {.column-margin}
+::: column-margin
 This graph illustrates the relationship between flipper length and body mass for three penguin species: Adelie, Chinstrap, and Gentoo, based on data collected at Palmer Station LTER. This visualization highlights the species-specific differences in body mass and flipper length.
 :::
 
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">See in Full Screen</button>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
 
-<div class="modal fade" id="exampleModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered p-8" style="max-width: 90%"><div class="modal-content">
+See in Full Screen
 
+</button>
+
+::::: {#exampleModal .modal .fade tabindex="-1"}
+:::: {.modal-dialog .modal-dialog-centered .p-8 style="max-width: 90%"}
+::: modal-content
 ```{r, echo=FALSE, warning=FALSE, out.width="100%"}
 mass_flipper
 ```
-
-</div></div></div>
+:::
+::::
+:::::
 
 ## Flipper Length vs. Bill Length
 
@@ -173,19 +196,25 @@ flipper_bill <- ggplot(data = penguins,
 flipper_bill
 ```
 
-::: {.column-margin}
+::: column-margin
 This graph visualizes the relationship between flipper length (mm) and bill length (mm) for three penguin species. It highlights species-specific variations in bill and flipper length, showing that Gentoo penguins tend to have the longest flippers, while Chinstrap penguins exhibit the greatest variability in bill length.
 :::
 
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">See in Full Screen</button>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
 
-<div class="modal fade" id="exampleModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered p-8" style="max-width: 90%"><div class="modal-content">
+See in Full Screen
 
+</button>
+
+::::: {.modal .fade tabindex="-1"}
+:::: {.modal-dialog .modal-dialog-centered .p-8 style="max-width: 90%"}
+::: modal-content
 ```{r, echo=FALSE, warning=FALSE, out.width="100%"}
 flipper_bill
 ```
-
-</div></div></div>
+:::
+::::
+:::::
 
 ## Bill Length vs. Bill Depth
 
@@ -213,26 +242,32 @@ bill_len_dep <- ggplot(data = penguins,
 
 bill_len_dep
 ```
-::: {.column-margin}
+
+::: column-margin
 This graph illustrates the relationship between bill length (mm) and bill depth (mm) for three penguin species. Each species is color-coded and shown with distinct shapes. The trend lines are fitted for each species to show the linear relationship between bill length and depth.
 :::
 
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">See in Full Screen</button>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
 
-<div class="modal fade" id="exampleModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered p-8" style="max-width: 90%"><div class="modal-content">
+See in Full Screen
 
+</button>
+
+::::: {.modal .fade tabindex="-1"}
+:::: {.modal-dialog .modal-dialog-centered .p-8 style="max-width: 90%"}
+::: modal-content
 ```{r, echo=FALSE, warning=FALSE, out.width="100%"}
 bill_len_dep
 ```
-
-</div></div></div>
+:::
+::::
+:::::
 
 ## Using Tabs for Multiple Graphs
 
 Including **multiple graphs** in a report can sometimes make it feel *cluttered*. By organizing the graphs into **tabs**, we give readers the *flexibility* to easily navigate and view only the visualizations they are interested in. This approach keeps the report *clean* and more *user-friendly,* allowing for a better browsing experience.
 
 ::: {.panel-tabset .nav-pills}
-
 ## Penguin Mass vs. Flipper Length
 
 ```{r, echo=FALSE, warning=FALSE, fig.align='center'}
@@ -258,7 +293,6 @@ mass_flipper <- ggplot(data = penguins,
 mass_flipper
 ```
 
-
 ## Flipper Length vs. Bill Length
 
 ```{r, echo=FALSE, warning=FALSE, fig.align='center'}
@@ -283,7 +317,6 @@ flipper_bill <- ggplot(data = penguins,
 
 flipper_bill
 ```
-
 
 ## Bill Length vs. Bill Depth
 
@@ -311,5 +344,4 @@ bill_len_dep <- ggplot(data = penguins,
 
 bill_len_dep
 ```
-
 :::
